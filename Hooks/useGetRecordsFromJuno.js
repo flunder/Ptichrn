@@ -24,38 +24,45 @@ function useGetRecordsFromJuno(props) {
     //     { id: 4, artist: "", title: 'Loshmi - "Soul Food"', url: 'https://www.juno.co.uk/MP3/SF773242-01-02-02.mp3' },
     // ]
 
-    getLargeImage = (smallImageUrl) => {
+    const getLargeImage = (smallImageUrl) => {
         return smallImageUrl.replace("/150/", "/full/").replace(".jpg", "-BIG.jpg");
     }
 
     const getRecordsFromJuno = () => {
-
         fetch(`https://www.juno.co.uk/playlists/builder/${junoID}.xspf)`)
         .then(response => response.text())
         .then((response) => {
-            var xml = new XMLParser().parseFromString(response);
-
-            const results = xml.children[0].children.map((item, index) => {
-                return {
-                    id: index,
-                    image: getLargeImage(item.children[3].value),
-                    title: item.children[2].value,
-                    artist: item.children[5].value,
-                    label: '',
-                    shop: item.children[1].value,
-                    tracks: [
-                        { id: 1, artist: "", title: item.children[0].value, url: item.children[0].value },
-                    ]
-                }
-            })
-
-            setResults(results);
-
+            parseAndPtich(response);
         }).catch((err) => {
             console.log('fetch', err)
         })
 
     };
+
+    const parseAndPtich = async (response) => {
+        var xml = new XMLParser().parseFromString(response);
+        const results = await convertXMLtoPtich(xml);
+        console.log('hello', results);
+        setResults(results);
+    }
+
+    const convertXMLtoPtich = async (xml) => {
+        const results = xml.children[0].children.map((item, index) => {
+            return {
+                id: index,
+                image: getLargeImage(item.children[3].value),
+                title: item.children[2].value,
+                artist: item.children[5].value,
+                label: '',
+                shop: item.children[1].value,
+                tracks: [
+                    { id: 1, artist: "", title: item.children[0].value, url: item.children[0].value },
+                ]
+            }
+        })
+
+        return results;
+    }
 
     return results;
 
