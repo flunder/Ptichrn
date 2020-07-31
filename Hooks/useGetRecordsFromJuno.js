@@ -42,12 +42,43 @@ function useGetRecordsFromJuno(props) {
     const parseAndPtich = async (response) => {
         var xml = new XMLParser().parseFromString(response);
         const results = await convertXMLtoPtich(xml);
-        console.log('hello', results);
-        setResults(results);
+        const onlyDefinedResults = results.filter(item => !!item);
+        console.log('hello', onlyDefinedResults);
+        setResults(onlyDefinedResults);
     }
 
     const convertXMLtoPtich = async (xml) => {
-        const results = xml.children[0].children.map((item, index) => {
+        const listOfTracks = xml.children[0].children;
+
+        let lastShopUrl = false;
+
+        const results = listOfTracks.map((item, index) => {
+
+            // Tracks
+
+            const currentShopUrl = item.children[1].value;
+            let tracks = [];
+
+            if (currentShopUrl === lastShopUrl) return;
+
+            for (var i = 0; i < 10; i++) {
+                const nextItem = listOfTracks[index+i];
+
+                if (!nextItem) { break; } // If there's no next item (end), break
+                if (nextItem && nextItem.children[1].value !== currentShopUrl) { break; } // if the next item has a different url, we're out
+
+                tracks.push(
+                    {
+                        id: i,
+                        artist: "",
+                        title: nextItem.children[2].value, 
+                        url: nextItem.children[0].value
+                    }
+                )
+            }
+
+            lastShopUrl = currentShopUrl;
+
             return {
                 id: index,
                 image: getLargeImage(item.children[3].value),
@@ -55,9 +86,7 @@ function useGetRecordsFromJuno(props) {
                 artist: item.children[5].value,
                 label: '',
                 shop: item.children[1].value,
-                tracks: [
-                    { id: 1, artist: "", title: item.children[0].value, url: item.children[0].value },
-                ]
+                tracks: tracks
             }
         })
 

@@ -31,8 +31,17 @@ const usePlayer = () => {
         });
     }
 
+    async function playTrack(index) {
+
+        const r = await TrackPlayer.getQueue();
+        console.log(r);
+
+        TrackPlayer.skip(`${index}`);
+    }
+
     return {
-        addTracks: addTracks
+        addTracks: addTracks,
+        playTrack: playTrack
     }
 }
 

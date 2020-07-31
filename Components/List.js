@@ -3,6 +3,7 @@ import { Animated, StyleSheet, LayoutAnimation, Dimensions, FlatList, Image, Tex
 import { Colors, Corners } from '../layout'
 import { usePlayer } from '../Hooks/usePlayer'
 import { useGetRecordsFromJuno } from '../Hooks/useGetRecordsFromJuno'
+import { Tracks } from './Tracks'
 
 const { width, height } = Dimensions.get('window');
 const itemHeight = height * 0.6;
@@ -41,6 +42,9 @@ function List(props) {
     }).current;
 
     renderItem = ({ item, index, separators }) => {
+
+        console.log(index, currentItemIndex);
+
         return (
             <View style={{ width: '100%', backgroundColor: Colors.gray200, borderRadius: 10, height: itemHeight, borderRadius: Corners.regular, overflow: 'hidden' }}>
                 <Image
@@ -48,7 +52,11 @@ function List(props) {
                     source={{ uri: item.image }}
                 />
                 <Animated.View
-                    style={{ ...StyleSheet.absoluteFillObject, backgroundColor: Colors.gray900, opacity: index === currentItemIndex ? 0 : 0.7 }}
+                    style={{ ...StyleSheet.absoluteFillObject, backgroundColor: Colors.gray900, opacity: index === currentItemIndex ? 0 : 0.8 }}
+                />
+                <Tracks
+                    isActive={currentItemIndex === index}
+                    tracks={item.tracks}
                 />
             </View>
         )
