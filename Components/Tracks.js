@@ -1,26 +1,63 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Dimensions, FlatList, Text, View } from 'react-native'
+import { Animated, Dimensions, FlatList, StyleSheet, Text, View } from 'react-native'
 import { usePlayer } from '../Hooks/usePlayer'
 import { Colors, Corners } from '../layout'
+import { itemHeight, itemWidth } from '../constants'
 
 const { width } = Dimensions.get('window');
 
+const pagination = {
+    colors: ['gold', '#222'],
+    widths: { normal: 10, expanded: 20 },
+}
+
 function Tracks({ tracks, isActive, ...props }) {
 
+    // Player Control
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-
-    // Context
     const { playTrack } = usePlayer();
 
-    useEffect(() => {
-        console.log('now', currentTrackIndex);
-        playTrack(currentTrackIndex);
-    }, [currentTrackIndex]);
+    // Animation
+    const scrollOffsetX = useRef(new Animated.Value(0)).current;
 
-    viewabilityConfig = {
-        waitForInteraction: true,
-        itemVisiblePercentThreshold: 100
-    }
+    // Lets interpolate!
+    const animatedPaginationColors = [
+        ...tracks.map((t, i) => ({
+            color: scrollOffsetX.interpolate({
+                inputRange: [
+                    (itemWidth * i) - 350, // 350 makes it more smoothe
+                    (itemWidth * i),
+                    (itemWidth * (i + 1))
+                ],
+                outputRange: ['#222', 'gold', '#222'],
+                extrapolate: "clamp"
+            }),
+            width: scrollOffsetX.interpolate({
+                inputRange: [
+                    (itemWidth * i) - 350, // 350 makes it more smoothe
+                    (itemWidth * i),
+                    (itemWidth * (i + 1))
+                ],
+                outputRange: [5, 25, 5],
+                extrapolate: "clamp"
+            })
+        }))
+    ]
+
+    // useEffect(() => {
+    //     scrollOffsetX.addListener(({value}) => {
+    //         console.log(value);
+    //     });
+    // })
+
+    useEffect(() => {
+        if (!isActive) return;
+        playTrack(currentTrackIndex);
+    }, [currentTrackIndex, isActive]);
+
+    viewabilityConfig = useRef({
+        itemVisiblePercentThreshold: 75
+    }).current;
 
     onViewableItemsChanged = useRef(({ viewableItems, changed }) => {
         if (viewableItems[0]) {
@@ -30,34 +67,35 @@ function Tracks({ tracks, isActive, ...props }) {
 
     renderItem = ({ item, index, separators }) => {
         return (
-            <View style={{ width: width-20, alignItems: 'flex-start', padding: 10, justifyContent: 'flex-end' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', borderRadius: Corners.regular, overflow: 'hidden' }}>
-                    <Text style={{ backgroundColor: Colors.gray400, fontWeight: 'bold', padding: 10, paddingHorizontal: 15 }}>
-                        {index + 1}
-                    </Text>
-                    <Text style={{ backgroundColor: Colors.gray900, color: 'white', fontSize: 14, padding: 10, fontWeight: 'bold' }}>
-                        {item.title}
-                    </Text>
-                </View>
-            </View>
+            <View style={{ width: width-20, alignItems: 'flex-start', padding: 10, justifyContent: 'flex-end' }} />
         )
     }
 
+    // See if this is cool
     // if (!isActive) return null;
 
     return (
         <>
 
-            {/* <View style={{ flexDirection: 'column', alignSelf: 'flex-start', bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', }}>
+            <View style={{ ...StyleSheet.absoluteFillObject, top: itemHeight - 20, left: 10, flexDirection: 'row' }}>
                 {tracks.map((track, i) => {
+                    const isCurrent = currentTrackIndex === i;
                     return (
-                        <View style={{ borderRadius: Corners.tight, backgroundColor: currentTrackIndex === i ? 'blueviolet' : undefined, }}>
-                            <Text style={{ padding: 5, color: 'white' }}>{track.title}</Text>
-                        </View>
+                        <Animated.View
+                            key={track.id}
+                            style={{
+                                height: 10,
+                                width: animatedPaginationColors[i].width,
+                                // width: 10,
+                                borderRadius: 100,
+                                backgroundColor: animatedPaginationColors[i].color,
+                                marginRight: 2
+                            }}
+                        />
                     )
                 })}
 
-            </View> */}
+            </View>
 
             <FlatList
                 data={tracks}
@@ -66,13 +104,20 @@ function Tracks({ tracks, isActive, ...props }) {
                 horizontal
 
                 snapToAlignment="center"
-                snapToInterval={width - 20}
+                snapToInterval={itemWidth}
                 decelerationRate="fast"
                 showsHorizontalScrollIndicator={false}
 
                 onViewableItemsChanged={onViewableItemsChanged}
                 viewabilityConfig={viewabilityConfig}
+
+                onScroll={
+                    Animated.event(
+                        [{ nativeEvent: { contentOffset: { x: scrollOffsetX } } }]
+                    )
+                }
             />
+            
         </>
     )
 }

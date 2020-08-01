@@ -4,9 +4,9 @@ import { Colors, Corners } from '../layout'
 import { usePlayer } from '../Hooks/usePlayer'
 import { useGetRecordsFromJuno } from '../Hooks/useGetRecordsFromJuno'
 import { Tracks } from './Tracks'
+import { itemHeight } from '../constants'
 
 const { width, height } = Dimensions.get('window');
-const itemHeight = height * 0.6;
 
 function List(props) {
 
@@ -30,10 +30,10 @@ function List(props) {
         setRecords(getRecordsFromJuno);
     }, [getRecordsFromJuno])
 
-    viewabilityConfig = {
+    viewabilityConfig = useRef({
         waitForInteraction: true,
-        itemVisiblePercentThreshold: 100
-    }
+        itemVisiblePercentThreshold: 75
+    }).current;
 
     onViewableItemsChanged = useRef(({ viewableItems, changed }) => {
         if (viewableItems[0]) {
@@ -42,18 +42,24 @@ function List(props) {
     }).current;
 
     renderItem = ({ item, index, separators }) => {
-
-        console.log(index, currentItemIndex);
-
         return (
             <View style={{ width: '100%', backgroundColor: Colors.gray200, borderRadius: 10, height: itemHeight, borderRadius: Corners.regular, overflow: 'hidden' }}>
+
+                {/* Display the Cover */}
+
                 <Image
                     style={{ width: '100%', height: '100%', resizeMode: 'cover', position: 'absolute' }}
                     source={{ uri: item.image }}
                 />
+
+                {/* Darken non selected Items */}
+
                 <Animated.View
                     style={{ ...StyleSheet.absoluteFillObject, backgroundColor: Colors.gray900, opacity: index === currentItemIndex ? 0 : 0.8 }}
                 />
+
+                {/* Allow for swiping through tracks */}
+
                 <Tracks
                     isActive={currentItemIndex === index}
                     tracks={item.tracks}
@@ -67,14 +73,14 @@ function List(props) {
             data={records}
             keyExtractor={item => `${item.id}`}
             renderItem={renderItem}
-            style={{ margin: 10 }}
+            style={{ margin: 15 }}
 
-            ListHeaderComponent={<View style={{ height: 10 }} />}
-            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-            ListFooterComponent={<View style={{ height: 10 }} />}
+            ListHeaderComponent={<View style={{ height: 15 }} />}
+            ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+            ListFooterComponent={<View style={{ height: 15 }} />}
 
             snapToAlignment="center"
-            snapToInterval={itemHeight + 10}
+            snapToInterval={itemHeight + 15}
             decelerationRate="fast"
             showsVerticalScrollIndicator={false}
 
