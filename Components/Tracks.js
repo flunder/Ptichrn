@@ -15,7 +15,7 @@ function Tracks({ tracks, isActive, ...props }) {
 
     // Player Control
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-    const { playTrack } = usePlayer();
+    const { playTrack, trackChangedTo } = usePlayer();
 
     // Animation
     const scrollOffsetX = useRef(new Animated.Value(0)).current;
@@ -44,11 +44,15 @@ function Tracks({ tracks, isActive, ...props }) {
         }))
     ]
 
+    useEffect(() => {
+        console.log({ trackChangedTo });
+    }, [trackChangedTo])
+
     // useEffect(() => {
     //     scrollOffsetX.addListener(({value}) => {
     //         console.log(value);
     //     });
-    // })
+    // }, [])
 
     useEffect(() => {
         if (!isActive) return;
@@ -73,6 +77,8 @@ function Tracks({ tracks, isActive, ...props }) {
 
     // See if this is cool
     // if (!isActive) return null;
+
+
 
     return (
         <>
@@ -117,7 +123,7 @@ function Tracks({ tracks, isActive, ...props }) {
                     )
                 }
             />
-            
+
         </>
     )
 }
