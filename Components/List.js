@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Animated, StyleSheet, LayoutAnimation, Dimensions, FlatList, Image, Text, View } from 'react-native'
 import { Colors, Corners } from '../layout'
 import { usePlayer } from '../Hooks/usePlayer'
-import { useGetRecordsFromJuno } from '../Hooks/useGetRecordsFromJuno'
+import { useRecordsFromJuno } from '../Hooks/useRecordsFromJuno'
 import { Tracks } from './Tracks'
 import { itemHeight } from '../constants'
 
@@ -14,7 +14,7 @@ function List(props) {
     const currentOpacity = useRef(new Animated.Value(0)).current;
     const prevNextOpacity = useRef(new Animated.Value(1)).current;
 
-    const getRecordsFromJuno = useGetRecordsFromJuno();
+    const getRecordsFromJuno = useRecordsFromJuno();
     const [records, setRecords] = useState([]);
 
     // Context

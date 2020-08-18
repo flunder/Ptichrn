@@ -12,6 +12,7 @@
   "dependencies": {
     "react": "16.13.1",
     "react-native": "0.63.2",
+    "react-native-cheerio": "^1.0.0-rc.4",
     "react-native-swift": "^1.2.3",
     "react-native-track-player": "^1.2.3",
     "react-native-xml2js": "^1.0.3",
