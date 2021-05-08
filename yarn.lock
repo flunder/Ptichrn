@@ -5684,11 +5684,6 @@ react-native-cheerio@^1.0.0-rc.4:
     lodash "^4.15.0"
     react-native-parse-html "^2.2.6"
 
-react-native-html-parser@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-html-parser/-/react-native-html-parser-0.1.0.tgz#c35de1dc325562da26e68befa423bac34505ba48"
-  integrity sha512-G5d0pk7TA9YgjVJhLRf2zMOOf1HXd8ItM9JYsTS2pXoEfSRfMfRU5iTj03LGwvHU2NT9kc18NDJeLgZY6+Bbvg==
-
 react-native-parse-html@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/react-native-parse-html/-/react-native-parse-html-2.2.6.tgz#21f28f97b38407784759bc59e244b51109d9cc87"
@@ -6853,9 +6848,9 @@ typedarray@^0.0.6:
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
 ua-parser-js@^0.7.18:
-  version "0.7.21"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.21.tgz#853cf9ce93f642f67174273cc34565ae6f308777"
-  integrity sha512-+O8/qh/Qj8CgC6eYBVBykMrNtp5Gebn4dlGD/kKXVkJNDwyrAwSIqwz8CDf+tsAIWVycKcku6gIXJ0qwx/ZXaQ==
+  version "0.7.28"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.28.tgz#8ba04e653f35ce210239c64661685bf9121dec31"
+  integrity sha512-6Gurc1n//gjp9eQNXjD9O3M/sMwVtN5S8Lv9bvOYBfKfDNiIIhqiyi01vMBO45u4zkDE420w/e0se7Vs+sIg+g==
 
 uglify-es@^3.1.9:
   version "3.3.9"
